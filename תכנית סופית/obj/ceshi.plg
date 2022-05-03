@@ -1,0 +1,28 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Project:</h2>
+M:\usb_2021\casefet1\Lcd8bitTouch380.uvproj
+Project File Date:  11/12/2019
+
+<h2>Output:</h2>
+Rebuild target 'QD-TFT'
+compiling main.c...
+compiling init380.c...
+compiling Isd4004Spi.c...
+linking...
+BL51 BANKED LINKER/LOCATER V6.22 - SN: K1FMC-JVEY6C
+COPYRIGHT KEIL ELEKTRONIK GmbH 1987 - 2009
+".\obj\main.obj",
+".\obj\init380.obj",
+".\SYS19.LIB",
+".\obj\Isd4004Spi.obj" 
+TO ".\obj\ceshi" 
+PRINT(".\ceshi.m51") RAMSIZE(256) 
+DISABLEWARNING (16) 
+XDATA( 0X0000-0X0FFF )
+*** FATAL ERROR L213: I/O ERROR ON WORK FILE:
+    EXCEPTION 0029H: ACCESS TO FILE DENIED
+    FILE: C:\Users\ÉÅÉÑ\AppData\Local\Temp\$$L51$$$.TMP
+Target not created

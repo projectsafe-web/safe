@@ -1,0 +1,217 @@
+C51 COMPILER V9.59.0.0   MAIN                                                              05/03/2022 10:37:49 PAGE 1   
+
+
+C51 COMPILER V9.59.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\obj\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c LARGE OPTIMIZE(8,SPEED) INCDIR(.\font;.\LCD;.\sys;.\touch;.\GUI;.
+                    -\USER) DEBUG OBJECTEXTEND TABS(2) OBJECT(.\obj\main.obj)
+
+line level    source
+
+   1          //25/04/2021
+   2          #include "initsys.h"
+   3          
+   4          #include "Isd4004Spi.h"
+   5          #include "fingerprint.h"
+   6          extern  PageID;
+   7          
+   8          sbit sensorDOOR =P2^1;
+   9          
+  10          void Init_Device(void);
+  11          void MenuScreen();
+  12          
+  13          void servo(unsigned int Width)  //P0.0
+  14          {
+  15   1        if(Width>2300) Width=2300;
+  16   1        if(Width<700) Width=700;
+  17   1        Width=-4*Width;
+  18   1      
+  19   1        PCA0CPL0= Width;
+  20   1        PCA0CPH0= Width>>8; 
+  21   1      }
+  22          
+  23          
+  24          void main(void)
+  25          {
+  26   1        S16 x=0, y=0,  ButtonNum;
+  27   1        Init_Device();
+  28   1        initSYS();
+  29   1      
+  30   1        MenuScreen();
+  31   1        //PlayI(200);
+  32   1      
+  33   1        while(1) {
+  34   2          if(!T_IRQ) {
+  35   3            delay_ms(10);
+  36   3            x = ReadTouchX();
+  37   3            y = ReadTouchY();
+  38   3            ButtonNum= ButtonTouch(x, y);
+  39   3            if(ButtonNum==1){ 
+  40   4              LCD_fillScreen(BLACK);    
+  41   4              LCD_print2C(20,150,"Record1 ",3,WHITE,BLACK);       
+  42   4              Record(0);
+  43   4              LCD_print2C(20,150,"Play1 ",3,WHITE,BLACK);     
+  44   4              PlayI(0);
+  45   4              MenuScreen();
+  46   4            }
+  47   3            else if(ButtonNum==2){ 
+  48   4              LCD_fillScreen(BLACK);    
+  49   4              LCD_print2C(20,150,"Record2 ",3,WHITE,BLACK);       
+  50   4              Record(100);
+  51   4              LCD_print2C(20,150,"Play2 ",3,WHITE,BLACK);     
+  52   4              PlayI(100);
+  53   4              MenuScreen();
+  54   4            }
+C51 COMPILER V9.59.0.0   MAIN                                                              05/03/2022 10:37:49 PAGE 2   
+
+  55   3            else if(ButtonNum==3){
+  56   4              LCD_fillScreen(BLACK);    
+  57   4              LCD_print2C( 20,150,"Record3 ",3,WHITE,BLACK);        
+  58   4              Record(200);
+  59   4              LCD_print2C(20,150,"Play3  ",3,WHITE,BLACK);      
+  60   4              PlayI(200);
+  61   4              MenuScreen();   
+  62   4            }
+  63   3            else if(ButtonNum==4) {
+  64   4              LCD_fillScreen(BLACK);    
+  65   4              LCD_print2C(20,150,"Record4 ",3,WHITE,BLACK);       
+  66   4              Record(300);
+  67   4              LCD_print2C(20,150,"Play4 ",3,WHITE,BLACK);     
+  68   4              PlayI(300);
+  69   4              MenuScreen();
+  70   4            }
+  71   3      
+  72   3            else if(ButtonNum==5) {
+  73   4              LCD_fillScreen(BLACK);    
+  74   4              LCD_print2C(20,150,"Record5 ",3,WHITE,BLACK);       
+  75   4              Record(400);
+  76   4              LCD_print2C(20,150,"Play5 ",3,WHITE,BLACK);     
+  77   4              PlayI(400);
+  78   4              MenuScreen();
+  79   4            }
+  80   3            else if(ButtonNum==6) {
+  81   4              LCD_fillScreen(BLACK);    
+  82   4              LCD_print2C(20,150,"SERVO ",3,WHITE,BLACK); 
+  83   4              servo(1000);
+  84   4              delay_ms(2000);
+  85   4              LCD_print2C(20,150,"SERVO ",3,WHITE,BLACK);   
+  86   4              servo(1500);
+  87   4              delay_ms(2000);
+  88   4              servo(2000);
+  89   4              delay_ms(2000);
+  90   4              MenuScreen();
+  91   4            }
+  92   3            else if(ButtonNum==7) {
+  93   4              LCD_fillScreen(BLACK);  
+  94   4              LCD_print2C(20,150,"Blu  ",3,WHITE,BLACK);
+  95   4              LCD_print2C(20,150,"Send SMS  ",3,WHITE,BLACK); 
+  96   4              PlayI(0);
+  97   4              SetTarget(1); // uart
+  98   4              printf("**0532255630");
+  99   4              delay_ms(1000);
+ 100   4              printf("##Attempted hacking");
+ 101   4              delay_ms(1000);
+ 102   4              printf("$$");
+ 103   4              delay_ms(1000);
+ 104   4              printf("**0544784787");
+ 105   4              delay_ms(1000);
+ 106   4              printf("##Attempeted vault hacking");
+ 107   4              delay_ms(1000);
+ 108   4              printf("$$");
+ 109   4      
+ 110   4              MenuScreen();
+ 111   4            }
+ 112   3      
+ 113   3            else if(ButtonNum==8){
+ 114   4              LCD_fillScreen(BLACK);  
+ 115   4              LCD_print2C(20,150,"Finger  ",3,WHITE,BLACK);
+ 116   4              if(FindFinger())
+C51 COMPILER V9.59.0.0   MAIN                                                              05/03/2022 10:37:49 PAGE 3   
+
+ 117   4              {
+ 118   5                LCD_setCursor (25, 50);
+ 119   5                printf("id=%d      ",(int)PageID);
+ 120   5                //PlayI(100);
+ 121   5              }
+ 122   4              else{
+ 123   5                printf("error not find  "); 
+ 124   5              }
+ 125   4              while(T_IRQ); 
+ 126   4              MenuScreen();
+ 127   4            }
+ 128   3      
+ 129   3            else if(ButtonNum==9){
+ 130   4              LCD_fillScreen(BLACK);  
+ 131   4              LCD_print2C(20,150,"Finger  ",3,WHITE,BLACK);
+ 132   4              if(FindFinger())
+ 133   4              {
+ 134   5                LCD_setCursor (25, 50);
+ 135   5                printf("id=%d      ",(int)PageID);
+ 136   5                if(PageID==0) 
+ 137   5                  PlayI(200);
+ 138   5                else if(PageID==2) 
+ 139   5                  PlayI(300);
+ 140   5                else
+ 141   5                  PlayI(100); 
+ 142   5      
+ 143   5                servo(2000);
+ 144   5                LCD_print2C(20,150,"open ",3,WHITE,BLACK);  
+ 145   5                delay_ms(2000);
+ 146   5                while(sensorDOOR==1);   
+ 147   5                servo(1000);
+ 148   5                LCD_print2C(20,150,"close ",3,WHITE,BLACK);
+ 149   5      
+ 150   5              }
+ 151   4              else{
+ 152   5                printf("error not find  "); 
+ 153   5                PlayI(0);
+ 154   5                SetTarget(1); // uart
+ 155   5                printf("**0544784787");
+ 156   5                delay_ms(1000);
+ 157   5                printf("##Attempted vault hacking");
+ 158   5                delay_ms(1000);
+ 159   5                printf("$$");
+ 160   5                SetTarget(0); // uart
+ 161   5              }
+ 162   4              while(T_IRQ); 
+ 163   4              MenuScreen();
+ 164   4            }
+ 165   3          } 
+ 166   2        }
+ 167   1      }
+ 168          
+ 169          void MenuScreen() {
+ 170   1        LCD_fillScreen(BLACK);
+ 171   1        LCD_print2C(20,30,"project steve&elior",3,WHITE,BLACK);
+ 172   1        LCD_clearButton();  
+ 173   1        LCD_drawButton(1,10,  80,60,60, 10, RED,WHITE,"Rec1",2);
+ 174   1        LCD_drawButton(2,80, 80,60,60, 10, BLUE,YELLOW,"Rec2",2);
+ 175   1        LCD_drawButton(3,150, 80,60,60, 10, GREEN,BLACK,"Rec3",2);
+ 176   1        LCD_drawButton(4,220, 80,60,60, 10, YELLOW,BLACK,"Rec4",2);
+ 177   1        LCD_drawButton(5,290, 80,60,60, 10, GRAY,BLACK,"Rec5",2);
+ 178   1        LCD_drawButton(6,10, 200,60,60, 10, YELLOW,BLACK,"SERVO",2);
+C51 COMPILER V9.59.0.0   MAIN                                                              05/03/2022 10:37:49 PAGE 4   
+
+ 179   1        LCD_drawButton(7,80, 200,60,60, 10, BLUE,WHITE,"blu ",2);
+ 180   1        LCD_drawButton(8,150, 200,60,60, 10, RED,BLACK,"finger ",2);
+ 181   1        LCD_drawButton(9,220, 200,60,60, 10, YELLOW,BLACK,"run ",2);
+ 182   1        LCD_setText2Color(WHITE,BLACK);
+ 183   1      }
+ 184          
+ 185          
+ 186          
+ 187          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1990    ----
+   CONSTANT SIZE    =    327    ----
+   XDATA SIZE       =   ----       6
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
